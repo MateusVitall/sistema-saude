@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sistema de Saúde</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Sistema de Saúde</h1>
+      <p>Cadastro e listagem de pacientes</p>
+    </header>
+
+    <section class="form-section">
+      <h2>Cadastrar Paciente</h2>
+      <div class="form-group">
+        <input id="nome" placeholder="Nome" />
+        <input id="data" type="date" />
+        <input id="cpf" placeholder="CPF" />
+        <input id="tel" placeholder="Telefone" />
+        <button onclick="inserirPaciente()">Salvar</button>
+      </div>
+    </section>
+
+    <section class="lista-section">
+      <h2>Lista de Pacientes</h2>
+      <ul id="lista"></ul>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
