@@ -45,7 +45,7 @@ function aplicarMascaraTelefone(input) {
 async function inserirPaciente() {
   const nome = document.getElementById('nome').value.trim();
   const data_nasc = document.getElementById('data').value;
-  const cpf = document.getElementById('cpf').value.trim();
+  let cpf = document.getElementById('cpf').value.trim(); // Use let para reatribuir
   const tel = document.getElementById('tel').value.trim();
 
   if (!nome || !data_nasc || !cpf || !tel) {
@@ -53,11 +53,15 @@ async function inserirPaciente() {
     return;
   }
 
+  // Remove caracteres não numéricos antes de validar
+  cpf = cpf.replace(/[^\d]+/g, ''); 
+
   if (!validarCPF(cpf)) {
     exibirMensagem('CPF inválido.', 'erro');
     return;
   }
 
+  // ... (o restante da sua função inserirPaciente permanece o mesmo)
   try {
     const res = await fetch('http://localhost:3000/pacientes', {
       method: 'POST',
@@ -65,7 +69,7 @@ async function inserirPaciente() {
       body: JSON.stringify({
         nome,
         data_nascimento: data_nasc,
-        cpf,
+        cpf, // Aqui o CPF já está sem máscara
         telefone: tel
       })
     });
