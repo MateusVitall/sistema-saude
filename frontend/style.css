@@ -100,3 +100,39 @@ li {
   80% { opacity: 1; }
   100% { opacity: 0; }
 }
+
+.hidden {
+  display: none;
+}
+
+nav {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+nav button {
+  background-color: #4682b4;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+nav button:hover {
+  background-color: #35638a;
+}
+
+textarea, select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+
+
+

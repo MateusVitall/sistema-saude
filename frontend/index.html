@@ -9,23 +9,63 @@
   <div class="container">
     <header>
       <h1>Sistema de Saúde</h1>
-      <p>Cadastro e listagem de pacientes</p>
+      <p>Cadastro, consultas e prontuários</p>
     </header>
 
-    <section class="form-section">
+    <nav>
+      <button onclick="mostrarTela('pacientes')">Pacientes</button>
+      <button onclick="mostrarTela('consultas')">Consultas</button>
+      <button onclick="mostrarTela('prontuarios')">Prontuários</button>
+    </nav>
+
+    <!-- Pacientes -->
+    <section id="pacientes" class="tela">
       <h2>Cadastrar Paciente</h2>
       <div class="form-group">
+        <label for="nome">Nome</label>
         <input id="nome" placeholder="Nome" />
+        <label for="data">Data de nascimento</label>
         <input id="data" type="date" />
+        <label for="cpf">CPF</label>
         <input id="cpf" placeholder="CPF" />
+        <label for="tel">Telefone</label>
         <input id="tel" placeholder="Telefone" />
         <button onclick="inserirPaciente()">Salvar</button>
       </div>
+      <h3>Lista de Pacientes</h3>
+      <ul id="lista"></ul>
     </section>
 
-    <section class="lista-section">
-      <h2>Lista de Pacientes</h2>
-      <ul id="lista"></ul>
+    <!-- Consultas -->
+    <section id="consultas" class="tela hidden">
+      <h2>Registrar Consulta</h2>
+      <div class="form-group">
+        <label for="pacienteConsulta">Paciente</label>
+        <select id="pacienteConsulta"></select>
+        <label for="medicoConsulta">Médico</label>
+        <select id="medicoConsulta"></select>
+        <label for="dataConsulta">Data</label>
+        <input type="date" id="dataConsulta">
+        <label for="valorConsulta">Valor (R$)</label>
+        <input type="number" id="valorConsulta">
+        <button onclick="inserirConsulta()">Salvar Consulta</button>
+      </div>
+      <h3>Consultas Registradas</h3>
+      <ul id="listaConsultas"></ul>
+    </section>
+
+    <!-- Prontuários -->
+    <section id="prontuarios" class="tela hidden">
+      <h2>Registrar Prontuário</h2>
+      <div class="form-group">
+        <label for="pacienteProntuario">Paciente</label>
+        <select id="pacienteProntuario"></select>
+        <label for="descricaoProntuario">Descrição</label>
+        <textarea id="descricaoProntuario" placeholder="Descrição do atendimento"></textarea>
+        <button onclick="inserirProntuario()">Salvar Prontuário</button>
+      </div>
+      <h3>Histórico de Prontuários</h3>
+      <ul id="listaProntuarios"></ul>
     </section>
   </div>
 
