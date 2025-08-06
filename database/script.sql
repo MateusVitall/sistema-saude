@@ -154,9 +154,3 @@ FROM pacientes p
 JOIN consultas c ON p.id = c.paciente_id
 GROUP BY p.nome;
 
-
--- Verifique pacientes existentes
-SELECT id, nome FROM pacientes;
-
--- Verifique médicos existentes
-SELECT id, nome FROM medicos;

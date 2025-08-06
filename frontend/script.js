@@ -1,22 +1,4 @@
-
 // Funções auxiliares
-function validarCPF(cpf) {
-  cpf = cpf.replace(/[^\d]+/g, '');
-  if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
-
-  let soma = 0;
-  for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
-  let resto = (soma * 10) % 11;
-  if (resto === 10 || resto === 11) resto = 0;
-  if (resto !== parseInt(cpf.charAt(9))) return false;
-
-  soma = 0;
-  for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
-  resto = (soma * 10) % 11;
-  if (resto === 10 || resto === 11) resto = 0;
-  return resto === parseInt(cpf.charAt(10));
-}
-
 function exibirMensagem(texto, tipo) {
   let msg = document.querySelector('.mensagem');
   if (msg) msg.remove();
@@ -69,10 +51,6 @@ async function inserirPaciente() {
   }
 
   cpf = cpf.replace(/[^\d]+/g, '');
-  if (!validarCPF(cpf)) {
-    exibirMensagem('CPF inválido.', 'erro');
-    return;
-  }
 
     try {
     const res = await fetch('http://localhost:3000/api/pacientes', {  // Adicionado /api
@@ -179,12 +157,13 @@ async function listarConsultas() {
     lista.innerHTML = '';
     
     consultas.forEach(c => {
+      console.log(c.valor)
       lista.innerHTML += `
         <li>
           ${c.data_consulta} - 
           ${c.nome_paciente} com Dr. ${c.nome_medico} 
           (${c.especialidade}) - 
-          R$ ${c.valor.toFixed(2)}
+          R$ ${c.valor ? parseFloat(c.valor).toFixed(2) : '0,00'}
         </li>`;
     });
   } catch (err) {
