@@ -74,8 +74,8 @@ async function inserirPaciente() {
     return;
   }
 
-  try {
-    const res = await fetch('http://localhost:3000/pacientes', {
+    try {
+    const res = await fetch('http://localhost:3000/api/pacientes', {  // Adicionado /api
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nome, data_nascimento: data_nasc, cpf, telefone: tel })
@@ -97,7 +97,7 @@ async function inserirPaciente() {
 }
 
 async function listarPacientes() {
-  const res = await fetch('http://localhost:3000/pacientes');
+  const res = await fetch('http://localhost:3000/api/pacientes'); 
   const data = await res.json();
   const lista = document.getElementById('lista');
   lista.innerHTML = '';
@@ -108,8 +108,8 @@ async function listarPacientes() {
 
 async function carregarSelects() {
   const [resPacientes, resMedicos] = await Promise.all([
-    fetch('http://localhost:3000/pacientes'),
-    fetch('http://localhost:3000/medicos')
+    fetch('http://localhost:3000/api/pacientes'),
+    fetch('http://localhost:3000/api/medicos')
   ]);
 
   const pacientes = await resPacientes.json();
@@ -136,39 +136,61 @@ async function inserirConsulta() {
   const paciente_id = document.getElementById('pacienteConsulta').value;
   const medico_id = document.getElementById('medicoConsulta').value;
   const data = document.getElementById('dataConsulta').value;
-  const valor = parseFloat(document.getElementById('valorConsulta').value);
+  const valor = document.getElementById('valorConsulta').value;
 
-  if (!paciente_id || !medico_id || !data || isNaN(valor)) {
-    exibirMensagem('Preencha todos os campos da consulta.', 'erro');
-    return;
-  }
+  console.log('Dados do formulário:', { paciente_id, medico_id, data, valor }); // Log dos dados
 
   try {
-    const res = await fetch('http://localhost:3000/consultas', {
+    const res = await fetch('http://localhost:3000/api/consultas', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ paciente_id, medico_id, data_consulta: data, valor })
+      body: JSON.stringify({ 
+        paciente_id: parseInt(paciente_id),
+        medico_id: parseInt(medico_id),
+        data_consulta: data,
+        valor: parseFloat(valor)
+      })
     });
 
-    if (res.ok) {
-      exibirMensagem('Consulta registrada com sucesso!', 'sucesso');
-      listarConsultas();
-    } else {
-      exibirMensagem('Erro ao registrar consulta.', 'erro');
-    }
+    const dataRes = await res.json();
+    console.log('Resposta da API:', dataRes); // Log da resposta
+
+    if (!res.ok) throw new Error(dataRes.erro || 'Erro desconhecido');
+
+    exibirMensagem('Consulta registrada!', 'sucesso');
+    await listarConsultas(); // Força atualização
+    
+    // Limpa os campos
+    document.getElementById('dataConsulta').value = '';
+    document.getElementById('valorConsulta').value = '';
+    
   } catch (err) {
-    exibirMensagem('Erro de conexão.', 'erro');
+    console.error('Erro completo:', err);
+    exibirMensagem(err.message, 'erro');
   }
 }
 
 async function listarConsultas() {
-  const res = await fetch('http://localhost:3000/consultas');
-  const consultas = await res.json();
-  const lista = document.getElementById('listaConsultas');
-  lista.innerHTML = '';
-  consultas.forEach(c => {
-    lista.innerHTML += `<li>${c.nome_paciente} com ${c.nome_medico} (${c.especialidade}) - R$ ${c.valor.toFixed(2)}</li>`;
-  });
+  try {
+    const res = await fetch('http://localhost:3000/api/consultas');
+    if (!res.ok) throw new Error('Erro ao carregar consultas');
+    const consultas = await res.json();
+    const lista = document.getElementById('listaConsultas');
+    lista.innerHTML = '';
+    
+    consultas.forEach(c => {
+      lista.innerHTML += `
+        <li>
+          ${c.data_consulta} - 
+          ${c.nome_paciente} com Dr. ${c.nome_medico} 
+          (${c.especialidade}) - 
+          R$ ${c.valor.toFixed(2)}
+        </li>`;
+    });
+  } catch (err) {
+    console.error('Erro:', err);
+    exibirMensagem(err.message, 'erro');
+  }
 }
 
 async function inserirProntuario() {
@@ -181,7 +203,7 @@ async function inserirProntuario() {
   }
 
   try {
-    const res = await fetch('http://localhost:3000/prontuarios', {
+    const res = await fetch('http://localhost:3000/api/prontuarios', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ paciente_id, descricao })
@@ -199,7 +221,7 @@ async function inserirProntuario() {
 }
 
 async function listarProntuarios() {
-  const res = await fetch('http://localhost:3000/prontuarios');
+  const res = await fetch('http://localhost:3000/api/prontuarios');
   const prontuarios = await res.json();
   const lista = document.getElementById('listaProntuarios');
   lista.innerHTML = '';
