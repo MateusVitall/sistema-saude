@@ -154,3 +154,12 @@ FROM pacientes p
 JOIN consultas c ON p.id = c.paciente_id
 GROUP BY p.nome;
 
+--Update
+UPDATE pacientes 
+SET telefone = ‘(21) 95555-0000’ 
+WHERE cpf = ‘234.567.890-12’;
+
+
+--Delete
+DELETE FROM consultas 
+WHERE id = 3;
