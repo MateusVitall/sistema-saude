@@ -157,7 +157,7 @@ GROUP BY p.nome;
 --Update
 UPDATE pacientes 
 SET telefone = ‘(21) 95555-0000’ 
-WHERE cpf = ‘234.567.890-12’;
+WHERE cpf = ‘234.567.890-12’; 
 
 
 --Delete

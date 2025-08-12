@@ -38,6 +38,61 @@ router.post('/pacientes', async (req, res) => {
   }
 });
 
+
+router.put('/pacientes', async (req, res) => {
+  const { id, nome, data_nascimento, cpf, telefone } = req.body;
+  if (!id || !nome || !data_nascimento || !cpf || !telefone) {
+    return res.status(400).json({ erro: 'Todos os campos são obrigatórios.' });
+  }
+  try {
+    // Remove formatação do CPF antes de salvar
+    const cpfLimpo = cpf.replace(/[^\d]+/g, '');
+    
+    // Verifica se já existe outro paciente com este CPF
+    const cpfCheck = await pool.query('SELECT id FROM pacientes WHERE cpf = $1 AND id != $2', [cpfLimpo, id]);
+    if (cpfCheck.rows.length > 0) {
+      return res.status(400).json({ erro: 'CPF já cadastrado para outro paciente.' });
+    }
+    
+    // Atualiza o paciente
+    const result = await pool.query(
+      'UPDATE pacientes SET nome = $1, data_nascimento = $2, cpf = $3, telefone = $4 WHERE id = $5 RETURNING *',
+      [nome, data_nascimento, cpfLimpo, telefone, id]
+    );
+    
+    if (result.rowCount === 0) {
+      return res.status(404).json({ erro: 'Paciente não encontrado.' });
+    }
+    
+    res.json({ mensagem: 'Paciente atualizado com sucesso!', paciente: result.rows[0] });
+  } catch (err) {
+    console.error('Erro ao atualizar paciente:', err);
+    res.status(500).json({ erro: 'Erro ao atualizar paciente.' });
+    res.status(500).json({ erro: 'Erro ao atualizar paciente.' });
+  }
+});
+
+router.delete('/pacientes', async (req, res) => {
+  const { id } = req.body;
+  if (!id) {
+    return res.status(400).json({ erro: 'ID do paciente é obrigatório.' });
+  }
+  try {
+    // Exclui consultas vinculadas ao paciente
+    await pool.query('DELETE FROM consultas WHERE paciente_id = $1', [id]);
+    // Exclui prontuários vinculados ao paciente
+    await pool.query('DELETE FROM prontuarios WHERE paciente_id = $1', [id]);
+    // Exclui o paciente
+    const result = await pool.query('DELETE FROM pacientes WHERE id = $1 RETURNING *', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ erro: 'Paciente não encontrado.' });
+    }
+    res.json({ mensagem: 'Paciente excluído com sucesso!', paciente: result.rows[0] });
+  } catch (err) {
+    console.error('Erro ao excluir paciente:', err);
+    res.status(500).json({ erro: 'Erro ao excluir paciente.' });
+  }
+})
 // ==========================
 // MÉDICOS
 // ==========================
